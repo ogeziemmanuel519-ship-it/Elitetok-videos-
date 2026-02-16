@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - EliteTok</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="center">
+  <div class="card">
+    <h1>Login</h1>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a href="signup.html">Sign Up</a></p>
+  </div>
+</div>
+
+<script src="script.js"></script>
+<script>
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("https://backend-9jp6.onrender.com/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("coins", data.coins);
+      window.location.href = "dashboard.html";
+    } else {
+      alert(data.message);
+    }
+  } catch (err) {
+    alert("Error logging in: " + err.message);
+  }
+}
+</script>
+</body>
+</html>
