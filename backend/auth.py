@@ -1,34 +1,50 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import jwt, time, os
+import jwt
+import os
 
 router = APIRouter()
-SECRET = os.getenv("JWT_SECRET", "supersecret")
-users_db = {}  # email -> {password, coins, referrer}
 
-class AuthModel(BaseModel):
+JWT_SECRET = os.environ.get("JWT_SECRET", "supersecret")
+
+# In-memory "database" for demo purposes
+users = {}
+
+class SignupModel(BaseModel):
+    username: str
     email: str
     password: str
-    ref: str = ""
+    referral: str = None
 
-def create_token(email: str):
-    payload = {"email": email, "exp": time.time() + 3600*24*7}
-    return jwt.encode(payload, SECRET, algorithm="HS256")
+class LoginModel(BaseModel):
+    email: str
+    password: str
 
 @router.post("/signup")
-def signup(data: AuthModel):
-    if data.email in users_db:
-        raise HTTPException(status_code=400, detail="User exists")
-    users_db[data.email] = {"password": data.password, "coins": 10, "referrer": data.ref}
-    if data.ref and data.ref in users_db:
-        users_db[data.ref]["coins"] += 10
-        users_db[data.email]["coins"] += 20
-    return {"message": "Signup successful"}
+def signup(data: SignupModel):
+    if data.email in users:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # New user coins: 1000 coins
+    coins = 1000
+    users[data.email] = {
+        "username": data.username,
+        "password": data.password,
+        "coins": coins
+    }
+    
+    # Referral bonus: 10 coins to new user + 10 to referrer
+    if data.referral and data.referral in users:
+        users[data.referral]["coins"] += 10
+        users[data.email]["coins"] += 10
+    
+    token = jwt.encode({"email": data.email}, JWT_SECRET, algorithm="HS256")
+    return {"token": token, "coins": users[data.email]["coins"]}
 
 @router.post("/login")
-def login(data: AuthModel):
-    user = users_db.get(data.email)
-    if not user or user["password"] != data.password:
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-    token = create_token(data.email)
-    return {"token": token, "coins": user["coins"]}
+def login(data: LoginModel):
+    if data.email not in users or users[data.email]["password"] != data.password:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+    
+    token = jwt.encode({"email": data.email}, JWT_SECRET, algorithm="HS256")
+    return {"token": token, "coins": users[data.email]["coins"]}
