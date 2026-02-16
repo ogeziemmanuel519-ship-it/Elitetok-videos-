@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - EliteTok</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="center">
+  <div class="card">
+    <h1>DASHBOARD</h1>
+    <p id="coins">Coins: 0</p>
+    
+    <button onclick="analyzeVideo()">Analyze Video (-5 coins)</button>
+
+    <h2>Buy Coins</h2>
+    <button onclick="buyCoins(1000, 10)">Buy 1000 coins (£10) via Ko-fi</button>
+
+    <h3>Or Pay via PayPal:</h3>
+    <div id="paypal-container-A6XPR75K8KVXL"></div>
+
+    <a href="https://ko-fi.com/yourusername" target="_blank">
+      <button>Support via Ko-fi</button>
+    </a>
+
+    <button onclick="logout()">Logout</button>
+  </div>
+</div>
+
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAABA6mcQRE84Rz40OlCmtngTp_MkCAh_ODZM_BW4PRV-8FCcqZ1sOmPQJms1kZqTimOImgNdm6xLuJjL8&components=hosted-buttons&disable-funding=venmo&currency=GBP">
+</script>
+<script>
+paypal.HostedButtons({
+  hostedButtonId: "A6XPR75K8KVXL",
+}).render("#paypal-container-A6XPR75K8KVXL");
+</script>
+
+<script src="script.js"></script>
+<script>
+let coins = parseInt(localStorage.getItem("coins")) || 0;
+const coinsElem = document.getElementById("coins");
+coinsElem.textContent = `Coins: ${coins}`;
+
+function analyzeVideo() {
+  if (coins < 5) return alert("Not enough coins!");
+  coins -= 5;
+  coinsElem.textContent = `Coins: ${coins}`;
+  localStorage.setItem("coins", coins);
+  alert("Video analyzed!");
+}
+
+function buyCoins(amount, price) {
+  const url = `https://ko-fi.com/yourusername?addFunds=${price}`;
+  alert(`Redirecting to Ko-fi to pay £${price} for ${amount} coins...`);
+  window.open(url, "_blank");
+
+  coins += amount; // Add coins after webhook confirmation
+  coinsElem.textContent = `Coins: ${coins}`;
+  localStorage.setItem("coins", coins);
+}
+
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("coins");
+  window.location.href = "index.html";
+}
+</script>
+</body>
+</html>
