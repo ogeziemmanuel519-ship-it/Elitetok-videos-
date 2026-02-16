@@ -1,51 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sign Up - EliteTok</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup - EliteTok</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="center">
-  <div class="card">
-    <h1>Sign Up</h1>
-    <input type="text" id="username" placeholder="Username">
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <input type="text" id="referral" placeholder="Referral Code (Optional)">
-    <button onclick="signup()">Sign Up</button>
+  <div class="full-screen-center">
+    <h1>Signup</h1>
+    <input id="username" type="text" placeholder="Username">
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <input id="referral" type="text" placeholder="Referral Code (optional)">
+    <button onclick="signup()">Signup</button>
     <p>Already have an account? <a href="login.html">Login</a></p>
   </div>
-</div>
-
-<script src="script.js"></script>
-<script>
-async function signup() {
-  const username = document.getElementById("username").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const referral = document.getElementById("referral").value || null;
-
-  try {
-    const res = await fetch("https://backend-9jp6.onrender.com/api/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, email, password, referral })
-    });
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("coins", data.coins); // 1000 coins for signup/payment
-      alert("Signup successful! Coins awarded: " + data.coins);
-      window.location.href = "dashboard.html";
-    } else {
-      alert(data.message);
-    }
-  } catch (err) {
-    alert("Error signing up: " + err.message);
-  }
-}
-</script>
+  <script src="script.js"></script>
 </body>
 </html>
