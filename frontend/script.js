@@ -84,25 +84,40 @@ async function analyzeVideo() {
   if (!token) { alert("Please login first"); return; }
   if (coins < 5) { alert("Not enough coins!"); return; }
 
+  const videoLink = document.getElementById("video-link")?.value;
+  const videoFile = document.getElementById("video-file")?.files[0];
+
+  if (!videoLink && !videoFile) {
+    alert("Please provide a video link or upload a file");
+    return;
+  }
+
+  const formData = new FormData();
+  if (videoLink) formData.append("link", videoLink);
+  if (videoFile) formData.append("file", videoFile);
+
   try {
     const res = await fetch("/api/analyze", {
       method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
+      headers: { "Authorization": `Bearer ${token}` },
+      body: formData
     });
+
     const data = await res.json();
+
     if (res.ok) {
+      // Deduct 5 coins
       coins = data.coins;
       localStorage.setItem("coins", coins);
       if (coinsElem) coinsElem.textContent = `Coins: ${coins}`;
+
       alert(`Video analyzed! AI rating: ${data.ai_rating}`);
     } else {
-      alert(data.detail || data.message);
+      alert(data.detail || data.message || "Analysis failed");
     }
   } catch (err) {
     alert("Analysis error: " + err.message);
+    console.error(err);
   }
 }
 
