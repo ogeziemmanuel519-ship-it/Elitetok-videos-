@@ -5,21 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - EliteTok</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- PayPal SDK -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAABA6mcQRE84Rz40OlCmtngTp_MkCAh_ODZM_BW4PRV-8FCcqZ1sOmPQJms1kZqTimOImgNdm6xLuJjL8&components=hosted-buttons&disable-funding=venmo&currency=GBP"></script>
 </head>
 <body>
   <div class="full-screen-center">
     <h1>Dashboard</h1>
+
+    <!-- Coins Display -->
     <p id="coins">Coins: 0</p>
 
+    <!-- Video Analysis -->
+    <h3>Analyze Video</h3>
+    <input type="text" placeholder="Paste video link here" class="video-link" id="video-link">
+    <input type="file" class="file-upload" id="video-file">
     <button onclick="analyzeVideo()">Analyze Video (5 Coins)</button>
 
-    <div>
-      <h3>Buy Coins</h3>
-      <button onclick="buyCoins(1000, 10)">£10 → 1000 Coins (Ko-fi)</button>
-    </div>
+    <!-- Buy Coins -->
+    <h3>Buy Coins</h3>
+    <button onclick="buyCoins(1000, 10)">£10 → 1000 Coins (Ko-fi)</button>
 
+    <!-- PayPal Hosted Button -->
     <div id="paypal-container-A6XPR75K8KVXL"></div>
+
+    <!-- Logout -->
     <button onclick="logout()">Logout</button>
   </div>
 
