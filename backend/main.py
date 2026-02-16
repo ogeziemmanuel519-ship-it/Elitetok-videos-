@@ -8,12 +8,12 @@ from backend.kofi import router as kofi_router
 
 app = FastAPI()
 
-# CORS middleware
+# CORS (frontend fetch calls)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # API routes
@@ -21,5 +21,5 @@ app.include_router(auth_router, prefix="/api")
 app.include_router(ai_router, prefix="/api")
 app.include_router(kofi_router, prefix="/api")
 
-# Serve frontend build
-app.mount("/", StaticFiles(directory="frontend/build", html=True), name="frontend")
+# Serve static frontend
+app.mount("/", StaticFiles(directory="../frontend", html=True), name="frontend")
