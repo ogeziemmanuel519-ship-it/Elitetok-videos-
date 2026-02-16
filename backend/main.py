@@ -3,28 +3,26 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-# Import API routers
 from backend.auth import router as auth_router
-from backend.ai import router as ai_router
-from backend.kofi import router as kofi_router
+from backend.video import router as video_router
+from backend.payment import router as payment_router
 
 app = FastAPI(title="EliteTok Backend")
 
-# --- CORS for frontend fetch calls ---
+# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or restrict to your domain
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"]
 )
 
-# --- API Routes ---
+# API Routers
 app.include_router(auth_router, prefix="/api")
-app.include_router(ai_router, prefix="/api")
-app.include_router(kofi_router, prefix="/api")
+app.include_router(video_router, prefix="/api")
+app.include_router(payment_router, prefix="/api")
 
-# --- Serve static frontend correctly ---
-# Absolute path calculation, works on Render
+# Serve frontend
 current_dir = os.path.dirname(os.path.abspath(__file__))
 frontend_path = os.path.join(current_dir, "..", "frontend")
 frontend_path = os.path.abspath(frontend_path)
@@ -34,7 +32,6 @@ if not os.path.exists(frontend_path):
 
 app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
 
-# --- Optional root route ---
 @app.get("/ping")
 def ping():
-    return {"message": "Backend is running!"}
+    return {"message": "Backend running!"}
