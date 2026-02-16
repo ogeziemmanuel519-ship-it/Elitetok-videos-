@@ -3,3 +3,4 @@ uvicorn
 python-multipart
 pydantic
 pyjwt
+python-jose[cryptography]
