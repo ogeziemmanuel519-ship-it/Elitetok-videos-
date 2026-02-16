@@ -7,10 +7,17 @@ let coins = parseInt(localStorage.getItem("coins")) || 0;
 const coinsElem = document.getElementById("coins");
 if (coinsElem) coinsElem.textContent = `Coins: ${coins}`;
 
+// Redirect dashboard if not logged in
+if (document.body.contains(coinsElem) && !token) {
+  console.log("No token found, redirecting to login...");
+  window.location.href = "login.html";
+}
+
 // ======================
 // Signup
 // ======================
 async function signup() {
+  console.log("Signup clicked");
   const username = document.getElementById("username").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -22,7 +29,9 @@ async function signup() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, email, password, referral })
     });
+    console.log("Response received", res);
     const data = await res.json();
+    console.log("Parsed data", data);
 
     if (res.ok && data.token) {
       localStorage.setItem("token", data.token);
@@ -33,6 +42,7 @@ async function signup() {
     }
   } catch (err) {
     alert("Signup error: " + err.message);
+    console.error(err);
   }
 }
 
@@ -40,6 +50,7 @@ async function signup() {
 // Login
 // ======================
 async function login() {
+  console.log("Login clicked");
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
@@ -49,7 +60,9 @@ async function login() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
+    console.log("Response received", res);
     const data = await res.json();
+    console.log("Parsed data", data);
 
     if (res.ok && data.token) {
       localStorage.setItem("token", data.token);
@@ -60,6 +73,7 @@ async function login() {
     }
   } catch (err) {
     alert("Login error: " + err.message);
+    console.error(err);
   }
 }
 
