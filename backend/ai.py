@@ -3,11 +3,9 @@ import random
 
 router = APIRouter()
 
-def auth(token: str = Header(...)):
-    return token
-
 @router.post("/analyze")
 def analyze_video(file: UploadFile = File(...), token: str = Header(...)):
+    # Deduct coins logic can go here
     return {"score": random.randint(50,100), "engagement": random.randint(50,100)}
 
 @router.post("/thumbnail-score")
